@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/krishishah/0x-relay#readme",
   "dependencies": {
-    "0x.js": "^0.31.1",
+    "0x.js": "^0.32.0",
     "@0xproject/json-schemas": "^0.7.7",
     "bignumber": "^1.1.0",
     "body-parser": "^1.18.2",
@@ -34,8 +34,7 @@
     "reflect-metadata": "^0.1.12",
     "typedi": "^0.6.0",
     "typeorm": "^0.1.12",
-    "typeorm-typedi-extensions": "^0.1.1",
-    "web3": "^1.0.0-beta.27"
+    "typeorm-typedi-extensions": "^0.1.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.8",
