@@ -65,3 +65,4 @@ credit to the following tutorials and open-source repos:
 * https://www.codementor.io/engineerapart/getting-started-with-postgresql-on-mac-osx-are8jcopb
 * http://mherman.org/blog/2016/11/05/developing-a-restful-api-with-node-and-typescript/#.WkONI7SZ3OS
 * https://github.com/w3tecch/express-typescript-boilerplate
+* https://circleci.com/docs/2.0/postgres-config/

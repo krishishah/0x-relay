@@ -4,6 +4,20 @@ jobs:
   build:
     docker:
       - image: circleci/node:latest
+        environment:
+          - PORT: 3000
+          - PGUSER: 'test'
+          - PGPASSWORD: 'test'
+          - PGDATABASE: 'test'
+          - PGHOST: 'localhost'
+          - PGPORT: '5432'
+    
+      - image: circleci/postgres:10.1
+        environment:
+          - POSTGRES_USER: test
+          - POSTGRES_DB: test
+          - POSTGRES_PASSWORD: test
+
     steps:
       - checkout
       - run:
@@ -15,6 +29,11 @@ jobs:
       - run:
           name: Install dependencies
           command: npm install
+
       - run:
-          name: "Run tests"
+          name: Sync Database with ORM
+          command: ./node_modules/.bin/typeorm schema:sync 
+          
+      - run:
+          name: Run tests
           command: npm test --exit
