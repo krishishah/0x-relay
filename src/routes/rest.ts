@@ -1,12 +1,17 @@
-import {Router, Request, Response, NextFunction} from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import { BigNumber } from '@0xproject/utils/lib/configured_bignumber';
+import { Service, Container } from 'typedi';
+import { RestService } from '../services/restService';
+import { SignedOrder } from '0x.js';
+import { SerializerUtils } from '../utils/deserializer';
 
 class V0RestApiRouter {
-  router: Router
+  router: Router;
 
   /**
    * Initialize the RestApiRouter
    */
-  constructor() {
+  constructor(private restService: RestService) {
     this.router = Router();
     this.init();
   }
@@ -15,7 +20,7 @@ class V0RestApiRouter {
    * GET token pairs.
    */
   public getTokenPairs(req: Request, res: Response, next: NextFunction) {
-    res.statusMessage = "Success";
+    res.statusMessage = 'Success';
     res.statusCode = 201;
     res.send();
   }
@@ -24,7 +29,7 @@ class V0RestApiRouter {
    * GET orderbook.
    */
   public getOrderBook(req: Request, res: Response, next: NextFunction) {
-    res.statusMessage = "Success";
+    res.statusMessage = 'Success';
     res.statusCode = 201;
     res.send();
   }
@@ -33,7 +38,7 @@ class V0RestApiRouter {
    * GET orders.
    */
   public getOrders(req: Request, res: Response, next: NextFunction) {
-    res.statusMessage = "Success";
+    res.statusMessage = 'Success';
     res.statusCode = 201;
     res.send();
   }
@@ -42,16 +47,25 @@ class V0RestApiRouter {
    * GET order.
    */
   public getOrder(req: Request, res: Response, next: NextFunction) {
-    res.statusMessage = "Success";
-    res.statusCode = 201;
-    res.send();
+    const salt: BigNumber = new BigNumber(req.params.orderHash);
+    const orderPromise: Promise<SignedOrder>  = this.restService.getOrder(salt);
+
+    orderPromise.then(order => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(SerializerUtils.SignedOrdertoJSON(order));
+    })
+    .catch(error => {
+      res.statusMessage = error.statusMessage;
+      res.statusCode = 404;
+      res.send();
+    });
   }
 
   /**
    * GET fees.
    */
   public getFees(req: Request, res: Response, next: NextFunction) {
-    res.statusMessage = "Success";
+    res.statusMessage = 'Success';
     res.statusCode = 201;
     res.send();
   }
@@ -60,7 +74,10 @@ class V0RestApiRouter {
    * POST order.
    */
   public postOrder(req: Request, res: Response, next: NextFunction) {
-    res.statusMessage = "Success";
+    const { body } = req;
+    const possibleOrder = body as SignedOrder;
+
+    res.statusMessage = 'Success';
     res.statusCode = 201;
     res.send();
   }
@@ -69,7 +86,7 @@ class V0RestApiRouter {
    * GET tokens.
    */
   public getTokens(req: Request, res: Response, next: NextFunction) {
-    res.statusMessage = "Success";
+    res.statusMessage = 'Success';
     res.statusCode = 201;
     res.send();
   }
@@ -91,4 +108,4 @@ class V0RestApiRouter {
 }
 
 // Create the v0RestApiRoutes, and export its configured Express.Router
-export const v0RestApiRoutes = new V0RestApiRouter().router;
+export const v0RestApiRoutes = Container.get(V0RestApiRouter).router;

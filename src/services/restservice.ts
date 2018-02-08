@@ -2,9 +2,9 @@ import { ZeroEx,  } from '0x.js';
 import { SignedOrderRepository } from '../repositories/signedOrderRepository';
 import { BigNumber } from '@0xproject/utils/lib/configured_bignumber';
 import { SignedOrder } from '0x.js/lib/src/types';
-import { NullOrder } from '../models/nullOrder';
 import { Service } from 'typedi';
 import { OrmRepository } from 'typeorm-typedi-extensions';
+import { SchemaValidator } from '@0xproject/json-schemas';
 
 @Service()
 export class RestService {
@@ -29,8 +29,10 @@ export class RestService {
         return null;
     }
   
-    public getOrder(salt: BigNumber): Promise<SignedOrder | NullOrder> {
-        return this.orderRepository.getSignedOrder(salt);
+    public getOrder(salt: BigNumber): Promise<SignedOrder> {
+        return this.orderRepository
+                   .getSignedOrder(salt)
+                   .catch(error => { throw error; });
     }
 
     public getFees() {
@@ -43,6 +45,10 @@ export class RestService {
 
     public getTokens() {
         return null;
+    }
+
+    private bool isValidSignedOrderSchema() {
+        
     }
 
   }

@@ -36,7 +36,7 @@ export class SignedOrderEntity {
     @Column()
     takerTokenAddress: string;
 
-    @PrimaryColumn()
+    @Column()
     salt: string;
 
     @Column()
@@ -47,5 +47,8 @@ export class SignedOrderEntity {
 
     @Column()
     expirationUnixTimestampSec: string;
+
+    @PrimaryColumn()
+    orderHashHex: string;
 
 }

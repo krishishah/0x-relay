@@ -3,7 +3,6 @@ import { SignedOrderEntity } from '../entities/SignedOrderEntity';
 import { SignedOrder } from '0x.js';
 import { BigNumber } from 'bignumber.js';
 import { ECSignature } from '0x.js/lib/src/types';
-import { NullOrder } from '../models/nullOrder';
 import { Service } from 'typedi';
 
 @Service()
@@ -14,14 +13,13 @@ export class SignedOrderRepository extends Repository<SignedOrderEntity> {
         this.insert(this.toSignedOrderEntity(signedOrder));
     }
 
-    public getSignedOrder(salt: BigNumber): Promise<SignedOrder | NullOrder> {
+    public getSignedOrder(salt: BigNumber): Promise<SignedOrder> {
         return this.findOne({salt: salt.toString()})
             .then(signedOrderEntity => {
                 return this.toSignedOrder(signedOrderEntity);
             })
             .catch(error => {
-                console.log(error);
-                return new NullOrder();
+                throw error;
             });
     }
 
