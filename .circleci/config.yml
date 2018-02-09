@@ -48,4 +48,4 @@ jobs:
           
       - run:
           name: Run tests
-          command: npm test --exit
+          command: npm run-script test --exit
