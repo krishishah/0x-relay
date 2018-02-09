@@ -6,6 +6,7 @@ jobs:
       - image: circleci/node:latest
         environment:
           - PORT: 3000
+          - NODE_ENV: 'development'
           - PGUSER: 'test'
           - PGPASSWORD: 'test'
           - PGDATABASE: 'test'
@@ -33,10 +34,6 @@ jobs:
       - run:
           name: Clean npm cache
           command: npm cache clean --force
-
-      - run:
-          name: Set npm environment to dev
-          command: npm config set -g production false
 
       - run:
           name: Install dependencies
