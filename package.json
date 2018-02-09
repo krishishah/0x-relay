@@ -12,7 +12,7 @@
     "build": "gulp scripts",
     "lint": "tslint src/**/*.ts",
     "download_snapshot": "download --extract --strip 1 --out 0x_testrpc_snapshot ${npm_package_config_snapshot_url}",
-    "testrpc": "testrpc -p 8545 --networkId 50 --db ./0x_testrpc_snapshot -m \"${npm_package_config_mnemonic}\"",
+    "testrpc": "ganache-cli -p 8545 --networkId 50 --db ./0x_testrpc_snapshot -m \"${npm_package_config_mnemonic}\"",
     "clean-dist": "rimraf dist"
   },
   "config": {
@@ -36,7 +36,6 @@
     "bignumber": "^1.1.0",
     "body-parser": "^1.18.2",
     "debug": "^3.1.0",
-    "ethereumjs-testrpc": "^6.0.3",
     "express": "^4.16.2",
     "morgan": "^1.9.0",
     "pg": "^7.4.1",
