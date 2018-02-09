@@ -40,7 +40,7 @@ jobs:
 
       - run:
           name: Install Dev Dependencies
-          command: npm install -g --only=dev
+          command: npm install --only=dev
 
       - run:
           name: Sync Database with ORM
