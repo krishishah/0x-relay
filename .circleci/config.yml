@@ -31,12 +31,16 @@ jobs:
           command: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
 
       - run:
-              name: Clean npm cache
-              command: npm cache clean --force
+          name: Clean npm cache
+          command: npm cache clean --force npm config set -g production false
 
       - run:
-              name: Install dependencies
-              command: npm install -g
+          name: Set npm environment to dev
+          command: npm config set -g production false
+
+      - run:
+          name: Install dependencies
+          command: npm install -g
 
       - run:
           name: Sync Database with ORM
