@@ -76,7 +76,6 @@ class V0RestApiRouter {
   public postOrder(req: Request, res: Response, next: NextFunction) {
     const { body } = req;
     const possibleOrder = body as SignedOrder;
-
     res.statusMessage = 'Success';
     res.statusCode = 201;
     res.send();
