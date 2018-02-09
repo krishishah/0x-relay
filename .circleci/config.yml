@@ -27,8 +27,16 @@ jobs:
             npm --version
 
       - run:
-          name: Install dependencies
-          command: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share} && npm cache clean --force && npm install -g
+          name: Change permissions from root to user
+          command: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+
+      - run:
+              name: Clean npm cache
+              command: npm cache clean --force
+
+      - run:
+              name: Install dependencies
+              command: npm install -g
 
       - run:
           name: Sync Database with ORM
