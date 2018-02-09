@@ -2,10 +2,16 @@ import * as path from 'path';
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import * as Web3 from 'web3';
+import * as Web3ProviderEngine from 'web3-provider-engine';
+import { InjectedWeb3Subprovider, RedundantRPCSubprovider } from '@0xproject/subproviders';
 import { v0RestApiRoutes } from './routes/rest';
+import { ZeroEx, ZeroExConfig } from '0x.js';
 
 // Creates and configures an ExpressJS web server.
-class App {
+export class App {
+
+  KOVAN_NETWORK_ID: number = 42;
 
   // ref to Express instance
   public express: express.Application;
@@ -15,6 +21,29 @@ class App {
     this.express = express();
     this.middleware();
     this.routes();
+  }
+
+  // Configer Web3 engine.
+  public web3providerEngine: Web3ProviderEngine = () => {
+    // Create a Web3 Provider Engine
+    const engine = new Web3ProviderEngine();
+    // Compose our Providers, order matters - use the RedundantRPCSubprovider to route all other requests
+    engine.addProvider(new RedundantRPCSubprovider(['http://localhost:8545', 'https://kovan.infura.io/']));
+
+    engine.start();
+
+    console.log('Connected to Web3 Provider Engine');
+
+    return engine;
+  }
+
+  // Set up ZeroEx instance
+  public zeroEx = () => {
+    const zeroExConfig: ZeroExConfig = {
+      networkId: 50, // testrpc
+    };
+    // Instantiate 0x.js instance
+    return new ZeroEx(this.web3providerEngine, zeroExConfig);
   }
 
   // Configure Express middleware.
@@ -35,5 +64,7 @@ class App {
   }
 
 }
-
-export default new App().express;
+let app = new App();
+export const zeroEx = app.zeroEx;
+export const appExpress = app.express;
+export const providerEngine = app.web3providerEngine;
