@@ -3,8 +3,7 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as Web3 from 'web3';
-import * as Web3ProviderEngine from 'web3-provider-engine';
-import { InjectedWeb3Subprovider, RedundantRPCSubprovider } from '@0xproject/subproviders';
+import { Web3ProviderEngine, InjectedWeb3Subprovider, RedundantRPCSubprovider } from 'web3-provider-engine';
 import { v0RestApiRoutes } from './routes/rest';
 import { ZeroEx, ZeroExConfig } from '0x.js';
 
@@ -29,7 +28,6 @@ export class App {
     const engine = new Web3ProviderEngine();
     // Compose our Providers, order matters - use the RedundantRPCSubprovider to route all other requests
     engine.addProvider(new RedundantRPCSubprovider(['http://localhost:8545', 'https://kovan.infura.io/']));
-
     engine.start();
 
     console.log('Connected to Web3 Provider Engine');
