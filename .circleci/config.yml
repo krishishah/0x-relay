@@ -28,7 +28,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: sudo npm cache clear --force && sudo npm install -g
+          command: npm cache clear --force && npm install -g
 
       - run:
           name: Sync Database with ORM
