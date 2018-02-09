@@ -40,6 +40,10 @@ jobs:
           command: npm install -g
 
       - run:
+          name: Install Mocha dependency
+          command: npm install -g mocha
+
+      - run:
           name: Sync Database with ORM
           command: ./node_modules/.bin/typeorm schema:sync 
           
