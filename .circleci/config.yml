@@ -3,10 +3,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node:9.3
         environment:
           - PORT: 3000
-          - NODE_ENV: 'development'
           - PGUSER: 'test'
           - PGPASSWORD: 'test'
           - PGDATABASE: 'test'
@@ -32,7 +31,7 @@ jobs:
           command: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
 
       - run:
-          name: Clean npm cache
+          name: Clean npm Cache
           command: npm cache clean --force
 
       - run:
@@ -40,8 +39,8 @@ jobs:
           command: npm install -g
 
       - run:
-          name: Install Mocha dependency
-          command: npm install -g mocha
+          name: Install Dev Dependencies
+          command: npm install -g --only=dev
 
       - run:
           name: Sync Database with ORM
