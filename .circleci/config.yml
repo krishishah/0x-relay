@@ -32,7 +32,7 @@ jobs:
 
       - run:
           name: Clean npm cache
-          command: npm cache clean --force npm config set -g production false
+          command: npm cache clean --force
 
       - run:
           name: Set npm environment to dev
