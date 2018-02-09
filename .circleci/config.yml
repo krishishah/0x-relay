@@ -28,7 +28,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: sudo npm install -g
+          command: npm install -g
 
       - run:
           name: Sync Database with ORM
