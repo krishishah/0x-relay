@@ -1,5 +1,5 @@
 import { Repository, EntityRepository, Connection } from 'typeorm';
-import { SignedOrderEntity } from '../entities/SignedOrderEntity';
+import { SignedOrderEntity } from '../entities/signedOrderEntity';
 import { SignedOrder } from '0x.js';
 import { BigNumber } from 'bignumber.js';
 import { ECSignature } from '0x.js/lib/src/types';

@@ -5,7 +5,7 @@ import { SignedOrder } from '0x.js/lib/src/types';
 import { Service } from 'typedi';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 import { SchemaValidator } from '@0xproject/json-schemas';
-import { SignedOrderEntity } from '../entities/SignedOrderEntity';
+import { SignedOrderEntity } from '../entities/signedOrderEntity';
 
 @Service()
 export class RestService {
