@@ -5,6 +5,7 @@ import { SignedOrder } from '0x.js/lib/src/types';
 import { Service } from 'typedi';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 import { SchemaValidator } from '@0xproject/json-schemas';
+import { SignedOrderEntity } from '../entities/SignedOrderEntity';
 
 @Service()
 export class RestService {
@@ -13,7 +14,7 @@ export class RestService {
      * Initialize the RestApiRouter
      */
     constructor(
-        @OrmRepository()
+        @OrmRepository(SignedOrderEntity)
         private orderRepository: SignedOrderRepository
     ) {}   
 
@@ -29,9 +30,9 @@ export class RestService {
         return null;
     }
   
-    public getOrder(salt: BigNumber): Promise<SignedOrder> {
+    public getOrder(orderHashHex: string): Promise<SignedOrder> {
         return this.orderRepository
-                   .getSignedOrder(salt)
+                   .getSignedOrder(orderHashHex)
                    .catch(error => { throw error; });
     }
 
@@ -45,10 +46,6 @@ export class RestService {
 
     public getTokens() {
         return null;
-    }
-
-    private bool isValidSignedOrderSchema() {
-        
     }
 
   }

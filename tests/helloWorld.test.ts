@@ -16,4 +16,11 @@ describe('baseRoute', () => {
     });
   });
 
+  it('should return 404 not found', () => {
+    return chai.request(appExpress).get('/v0/order/12345')
+    .then(res => {
+      expect(res.status).to.eql(404);
+    });
+  });
+
 });

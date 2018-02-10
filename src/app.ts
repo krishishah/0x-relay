@@ -4,10 +4,13 @@ import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import * as Web3 from 'web3';
 import { Web3ProviderEngine, InjectedWeb3Subprovider, RedundantRPCSubprovider } from 'web3-provider-engine';
-import { v0RestApiRoutes } from './routes/rest';
+import { V0RestApiRouter } from './routes/rest';
 import { ZeroEx, ZeroExConfig } from '0x.js';
+import { Service } from 'typedi';
+import { Container } from 'typedi/Container';
 
 // Creates and configures an ExpressJS web server.
+@Service()
 export class App {
 
   KOVAN_NETWORK_ID: number = 42;
@@ -16,7 +19,7 @@ export class App {
   public express: express.Application;
 
   // Run configuration methods on the Express instance.
-  constructor() {
+  constructor(private v0RestApiRouter: V0RestApiRouter) {
     this.express = express();
     this.middleware();
     this.routes();
@@ -58,11 +61,12 @@ export class App {
      * API endpoints */
     let router = express.Router();
 
-    this.express.use('/v0', v0RestApiRoutes);
+    this.express.use('/v0', this.v0RestApiRouter.router);
   }
 
 }
-let app = new App();
-export const zeroEx = app.zeroEx;
-export const appExpress = app.express;
-export const providerEngine = app.web3providerEngine;
+
+// let app = Container.get(App);
+// export const zeroEx = app.zeroEx;
+// export const appExpress = app.express;
+// export const providerEngine = app.web3providerEngine;

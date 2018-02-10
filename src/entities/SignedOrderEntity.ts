@@ -2,6 +2,9 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class SignedOrderEntity {
+
+    @PrimaryColumn()
+    orderHashHex: string;
     
     @Column()
     ECSignatureV: string;
@@ -47,8 +50,5 @@ export class SignedOrderEntity {
 
     @Column()
     expirationUnixTimestampSec: string;
-
-    @PrimaryColumn()
-    orderHashHex: string;
 
 }

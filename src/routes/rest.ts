@@ -3,9 +3,10 @@ import { BigNumber } from '@0xproject/utils/lib/configured_bignumber';
 import { Service, Container } from 'typedi';
 import { RestService } from '../services/restService';
 import { SignedOrder } from '0x.js';
-import { SerializerUtils } from '../utils/deserializer';
+import { SerializerUtils } from '../utils/serialization';
 
-class V0RestApiRouter {
+@Service()
+export class V0RestApiRouter {
   router: Router;
 
   /**
@@ -47,8 +48,8 @@ class V0RestApiRouter {
    * GET order.
    */
   public getOrder(req: Request, res: Response, next: NextFunction) {
-    const salt: BigNumber = new BigNumber(req.params.orderHash);
-    const orderPromise: Promise<SignedOrder>  = this.restService.getOrder(salt);
+    const orderHashHex: string = req.params.orderHash;
+    const orderPromise: Promise<SignedOrder>  = this.restService.getOrder(orderHashHex);
 
     orderPromise.then(order => {
       res.setHeader('Content-Type', 'application/json');
@@ -97,14 +98,11 @@ class V0RestApiRouter {
   private init() {
     this.router.get('/token_pairs', this.getTokenPairs);
     this.router.get('/orderbook', this.getOrderBook);
-    this.router.get('/orders', this.getOrder);
-    this.router.get('/order/:orderHash', this.getOrder);
+    this.router.get('/orders', this.getOrders);
+    this.router.get('/order/:orderHash', this.getOrder.bind(this));
     this.router.get('/fees', this.getFees);
     this.router.post('/order', this.postOrder);
     this.router.get('/tokens', this.getTokens);
   }
 
 }
-
-// Create the v0RestApiRoutes, and export its configured Express.Router
-export const v0RestApiRoutes = Container.get(V0RestApiRouter).router;
