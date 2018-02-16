@@ -8,6 +8,7 @@ import { V0RestApiRouter } from './routes/rest';
 import { ZeroEx, ZeroExConfig } from '0x.js';
 import { Service } from 'typedi';
 import { Container } from 'typedi/Container';
+import { ZeroExClient } from './utils/zeroExClient';
 
 // Creates and configures an ExpressJS web server.
 @Service()
@@ -44,7 +45,7 @@ export class App {
       networkId: 50, // testrpc
     };
     // Instantiate 0x.js instance
-    return new ZeroEx(this.web3providerEngine, zeroExConfig);
+    return ZeroExClient.createInstance(Web3ProviderEngine, zeroExConfig);
   }
 
   // Configure Express middleware.

@@ -6,6 +6,8 @@ import { App } from './app';
 import { create } from 'domain';
 import { useContainer as ormUseContainer, createConnection } from 'typeorm';
 import { Container } from 'typedi';
+import { Application } from 'express';
+import * as express from 'express';
 
 debug('ts-express:server');
 
@@ -16,8 +18,7 @@ createConnection().then(async connection => {
   const port = normalizePort(process.env.PORT || 3000);
   let app = Container.get(App).express;
   app.set('port', port);
-  const server = http.createServer(app);
-  server.listen(port);
+  let server = http.createServer(app).listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
 
@@ -48,4 +49,6 @@ createConnection().then(async connection => {
     let bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`;
     debug(`Listening on ${bind}`);
   }
-}).catch(error => console.log('Error: ', error));
+}).catch(error => {
+  console.log('Error: ', error);
+});

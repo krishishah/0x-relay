@@ -6,6 +6,7 @@ import { Service } from 'typedi';
 import { OrmRepository } from 'typeorm-typedi-extensions';
 import { SchemaValidator } from '@0xproject/json-schemas';
 import { SignedOrderEntity } from '../entities/signedOrderEntity';
+import { ZeroExClient } from '../utils/zeroExClient';
 
 @Service()
 export class RestService {
@@ -41,7 +42,10 @@ export class RestService {
     }
   
     public postOrder(order: SignedOrder) {
-        return null;
+        let orderHashHex: string = ZeroEx.getOrderHashHex(order);
+
+        return this.orderRepository
+                   .addSignedOrder(order, orderHashHex);
     }
 
     public getTokens() {

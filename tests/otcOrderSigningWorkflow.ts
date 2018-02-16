@@ -12,12 +12,11 @@ const zeroEx = new ZeroEx(this.web3providerEngine, {networkId: 50});
 const DECIMALS = 18;
 
 const mainAsync = async () => {
-
     // Addresses
-    const WETH_ADDRESS = await zeroEx.etherToken.getContractAddressIfExists(); // The wrapped ETH token contract
-    const ZRX_ADDRESS = await zeroEx.exchange.getZRXTokenAddress(); // The ZRX token contract
+    const WETH_ADDRESS = zeroEx.etherToken.getContractAddressIfExists() as string; // The wrapped ETH token contract
+    const ZRX_ADDRESS = zeroEx.exchange.getZRXTokenAddress(); // The ZRX token contract
     // The Exchange.sol address (0x exchange smart contract)
-    const EXCHANGE_ADDRESS = await zeroEx.exchange.getContractAddress();
+    const EXCHANGE_ADDRESS = zeroEx.exchange.getContractAddress();
 
     // Getting list of accounts
     const accounts = await zeroEx.getAvailableAddressesAsync();
@@ -27,9 +26,8 @@ const mainAsync = async () => {
     const [makerAddress, takerAddress] = accounts;
 
     // Unlimited allowances to 0x proxy contract for maker and taker
-    const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(ZRX_ADDRESS,  makerAddress);
+    const setMakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(ZRX_ADDRESS, makerAddress);
     await zeroEx.awaitTransactionMinedAsync(setMakerAllowTxHash);
-    console.log('Maker allowance mined...');
 
     const setTakerAllowTxHash = await zeroEx.token.setUnlimitedProxyAllowanceAsync(WETH_ADDRESS, takerAddress);
     await zeroEx.awaitTransactionMinedAsync(setTakerAllowTxHash);
@@ -53,16 +51,17 @@ const mainAsync = async () => {
         salt: ZeroEx.generatePseudoRandomSalt(),
         makerFee: new BigNumber(0),
         takerFee: new BigNumber(0),
-        makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.2), DECIMALS),  // Base 18 decimals
-        takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.3), DECIMALS),  // Base 18 decimals
-        expirationUnixTimestampSec: new BigNumber(Date.now() + 3600000),          // Valid for up to an hour
+        makerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.2), DECIMALS), // Base 18 decimals
+        takerTokenAmount: ZeroEx.toBaseUnitAmount(new BigNumber(0.3), DECIMALS), // Base 18 decimals
+        expirationUnixTimestampSec: new BigNumber(Date.now() + 3600000), // Valid for up to an hour
     };
 
     // Create orderHash
     const orderHash = ZeroEx.getOrderHashHex(order);
 
     // Signing orderHash -> ecSignature
-    const ecSignature = await zeroEx.signOrderHashAsync(orderHash, makerAddress, false);
+    const shouldAddPersonalMessagePrefix = false;
+    const ecSignature = await zeroEx.signOrderHashAsync(orderHash, makerAddress, shouldAddPersonalMessagePrefix);
 
     // Appending signature to order
     const signedOrder = {
@@ -79,7 +78,10 @@ const mainAsync = async () => {
 
     // Filling order
     const txHash = await zeroEx.exchange.fillOrderAsync(
-        signedOrder, fillTakerTokenAmount, shouldThrowOnInsufficientBalanceOrAllowance, takerAddress,
+        signedOrder,
+        fillTakerTokenAmount,
+        shouldThrowOnInsufficientBalanceOrAllowance,
+        takerAddress,
     );
 
     // Transaction receipt
@@ -87,5 +89,4 @@ const mainAsync = async () => {
     console.log('FillOrder transaction receipt: ', txReceipt);
 };
 
-mainAsync()
-    .catch(err => console.log);
+mainAsync().catch(err => console.log);

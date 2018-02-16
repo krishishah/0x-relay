@@ -17,6 +17,9 @@ export class SignedOrderRepository extends Repository<SignedOrderEntity> {
     public getSignedOrder(orderHashHex: string): Promise<SignedOrder> {
         return this.findOne({orderHashHex: orderHashHex})
             .then(signedOrderEntity => {
+                if (signedOrderEntity === undefined) {
+                    throw Error;
+                }
                 return this.toSignedOrder(signedOrderEntity);
             })
             .catch(error => {
@@ -25,25 +28,30 @@ export class SignedOrderRepository extends Repository<SignedOrderEntity> {
     }
 
     private toSignedOrderEntity(signedOrder: SignedOrder, orderHashHex: string): SignedOrderEntity {
-        const signedOrderEntity: SignedOrderEntity = {
-            ECSignatureV: signedOrder.ecSignature.v.toString(),
-            ECSignatureR: signedOrder.ecSignature.r,
-            ECSignatureS: signedOrder.ecSignature.s,
-            maker: signedOrder.maker,
-            taker: signedOrder.taker,
-            makerFee: signedOrder.makerFee.toString(),
-            takerFee: signedOrder.takerFee.toString(),
-            makerTokenAmount: signedOrder.makerTokenAmount.toString(),
-            takerTokenAmount: signedOrder.takerTokenAmount.toString(),
-            makerTokenAddress: signedOrder.makerTokenAddress,
-            takerTokenAddress: signedOrder.takerTokenAddress,
-            salt: signedOrder.salt.toString(),
-            exchangeContractAddress: signedOrder.exchangeContractAddress,
-            feeRecipient: signedOrder.feeRecipient,
-            expirationUnixTimestampSec: signedOrder.expirationUnixTimestampSec.toString(),
-            orderHashHex: orderHashHex
-        };
-        return signedOrderEntity;
+        try {
+            const signedOrderEntity: SignedOrderEntity = {
+                ECSignatureV: signedOrder.ecSignature.v.toString(),
+                ECSignatureR: signedOrder.ecSignature.r,
+                ECSignatureS: signedOrder.ecSignature.s,
+                maker: signedOrder.maker,
+                taker: signedOrder.taker,
+                makerFee: signedOrder.makerFee.toString(),
+                takerFee: signedOrder.takerFee.toString(),
+                makerTokenAmount: signedOrder.makerTokenAmount.toString(),
+                takerTokenAmount: signedOrder.takerTokenAmount.toString(),
+                makerTokenAddress: signedOrder.makerTokenAddress,
+                takerTokenAddress: signedOrder.takerTokenAddress,
+                salt: signedOrder.salt.toString(),
+                exchangeContractAddress: signedOrder.exchangeContractAddress,
+                feeRecipient: signedOrder.feeRecipient,
+                expirationUnixTimestampSec: signedOrder.expirationUnixTimestampSec.toString(),
+                orderHashHex: orderHashHex
+            };
+            return signedOrderEntity;
+        } catch (e) {
+            console.log(e);
+        }
+
     }
 
     private toSignedOrder(signedOrderEntity: SignedOrderEntity): SignedOrder {       
