@@ -4,6 +4,9 @@ import { ZeroEx, SignedOrder } from '0x.js';
 import BigNumber from 'bignumber.js';
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
+import { SignedOrderEntity } from '../src/entities/signedOrderEntity';
+import { SerializerUtils } from '../src/utils/serialization';
+import { SignedOrderSchema } from '../src/schemas/signedOrderSchema';
 
 // Configer Web3 engine.
 const engine = new ProviderEngine();
@@ -78,10 +81,10 @@ const makeOrder = async () => {
     console.log('Submitted order:\n', signedOrder);
     console.log('order hash:\n', orderHash);
 
-    return signedOrder;
+    return orderHash;
 };
 
-const takeOrder = async (signedOrder: SignedOrder) => {
+const takeOrder = async (signedOrderHashHex: string) => {
 
     // Addresses
     const WETH_ADDRESS = await zeroEx.etherToken.getContractAddressIfExists(); // The wrapped ETH token contract
@@ -107,8 +110,17 @@ const takeOrder = async (signedOrder: SignedOrder) => {
     await zeroEx.awaitTransactionMinedAsync(convertEthTxHash);
     console.log(`${ethAmount} ETH -> WETH conversion mined...`);
 
+    // Get order from relayer
+    const signedOrder: SignedOrder = 
+                await chai.request(hostport).get('/v0/order/' + signedOrderHashHex)
+                          .then(res => {
+                              const { body } = res;
+                              let orderSchema = body as SignedOrderSchema;
+                              return SerializerUtils.SignedOrderfromJSON(orderSchema);
+                          });
+
     // Verify that order is fillable
-    await zeroEx.exchange.validateOrderFillableOrThrowAsync(signedOrder);
+    zeroEx.exchange.validateOrderFillableOrThrowAsync(signedOrder);
 
     // Try to fill order
     const shouldThrowOnInsufficientBalanceOrAllowance = true;
@@ -124,4 +136,6 @@ const takeOrder = async (signedOrder: SignedOrder) => {
     console.log('FillOrder transaction receipt: ', txReceipt);
 };
 
-makeOrder().then(signedOrder => {takeOrder(signedOrder); }).catch(err => console.log);
+makeOrder().then(orderHash => {
+    takeOrder(orderHash); 
+}).catch(err => console.log);

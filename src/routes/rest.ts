@@ -4,6 +4,7 @@ import { Service, Container } from 'typedi';
 import { RestService } from '../services/restService';
 import { SignedOrder } from '0x.js';
 import { SerializerUtils } from '../utils/serialization';
+import { SignedOrderSchema } from '../schemas/signedOrderSchema';
 
 @Service()
 export class V0RestApiRouter {
@@ -52,7 +53,7 @@ export class V0RestApiRouter {
     this.restService.getOrder(orderHashHex)
     .then(order => {
       res.setHeader('Content-Type', 'application/json');
-      res.statusMessage = SerializerUtils.SignedOrdertoJSON(order);
+      res.json(SerializerUtils.SignedOrdertoJSON(order));
       res.send();
     })
     .catch(error => {
@@ -76,8 +77,9 @@ export class V0RestApiRouter {
    */
   public postOrder(req: Request, res: Response, next: NextFunction) {
     const { body } = req;
-    const possibleOrder = body as SignedOrder;
-    this.restService.postOrder(possibleOrder);
+    const signedOrderSchema = body as SignedOrderSchema;
+    const signedOrder = SerializerUtils.SignedOrderfromJSON(signedOrderSchema);
+    this.restService.postOrder(signedOrder);
     res.statusMessage = 'Success';
     res.statusCode = 201;
     res.send();

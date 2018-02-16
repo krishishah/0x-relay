@@ -1,16 +1,13 @@
 import { SignedOrder } from '0x.js/lib/src/types';
 import { BigNumber } from 'bignumber.js';
 import { ECSignature } from '0x.js';
+import { SignedOrderSchema } from '../schemas/signedOrderSchema';
 
 export class SerializerUtils {
 
-    public static SignedOrdertoJSON(signedOrder: SignedOrder): string {
-        const signedOrderDict = {
-            ecSignature: {
-                r: signedOrder.ecSignature.r,
-                s: signedOrder.ecSignature.s,
-                v: signedOrder.ecSignature.v.toString()
-            },
+    public static SignedOrdertoJSON(signedOrder: SignedOrder): SignedOrderSchema {
+        return {
+            ecSignature: signedOrder.ecSignature,
             maker: signedOrder.maker,
             taker: signedOrder.taker,
             makerFee: signedOrder.makerFee.toString(),
@@ -24,24 +21,12 @@ export class SerializerUtils {
             feeRecipient: signedOrder.feeRecipient,
             expirationUnixTimestampSec: signedOrder.expirationUnixTimestampSec.toString()
         };
-
-        return JSON.stringify(signedOrderDict);
     }
 
-    private SignedOrderfromJSON(signedOrderString: string): SignedOrder {
-        
-        // tslint:disable-next-line:no-any
-        let signedOrderObj: any = JSON.parse(signedOrderString);
-
+    public static SignedOrderfromJSON(signedOrderObj: SignedOrderSchema): SignedOrder {
         try {
-            const ecSignature: ECSignature = {
-                r: signedOrderObj.ECSignatureR,
-                s: signedOrderObj.ECSignatureS,
-                v: Number(signedOrderObj.ECSignatureV)
-            };
-
             const signedOrder: SignedOrder = {
-                ecSignature: ecSignature,
+                ecSignature: signedOrderObj.ecSignature,
                 maker: signedOrderObj.maker,
                 taker: signedOrderObj.taker,
                 makerFee: new BigNumber(signedOrderObj.makerFee),
@@ -55,9 +40,7 @@ export class SerializerUtils {
                 feeRecipient: signedOrderObj.feeRecipient,
                 expirationUnixTimestampSec: new BigNumber(signedOrderObj.expirationUnixTimestampSec)
             };
-
             return signedOrder;
-
         } catch (e) {
             console.log(e);
         }
