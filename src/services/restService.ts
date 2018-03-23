@@ -19,7 +19,7 @@ export class RestService {
         private orderRepository: SignedOrderRepository
     ) {}   
 
-    public getTokenPairs() {
+    public getTokenPairs(baseTokenAddress: string, quoteTokenAddress: string) {
         return null;
     }
   
