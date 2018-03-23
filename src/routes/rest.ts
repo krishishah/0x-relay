@@ -31,9 +31,20 @@ export class V0RestApiRouter {
    * GET orderbook.
    */
   public getOrderBook(req: Request, res: Response, next: NextFunction) {
-    res.statusMessage = 'Success';
-    res.statusCode = 201;
-    res.send();
+    const baseTokenAddress: string = req.params.baseTokenAddress;
+    const quoteTokenAddress: string = req.params.quoteTokenAddress;
+    this.restService.getOrderBook(baseTokenAddress, quoteTokenAddress)
+    .then(orderBook => {
+      res.setHeader('Content-Type', 'application/json');
+      res.json(SerializerUtils.TokenPairOrderbooktoJSON(orderBook));
+      res.send();
+    })
+    .catch(error => {
+      // Sort out error handling
+      res.statusMessage = error.statusMessage;
+      res.statusCode = 404;
+      res.send();
+    });
   }
 
   /**

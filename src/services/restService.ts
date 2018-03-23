@@ -7,6 +7,7 @@ import { OrmRepository } from 'typeorm-typedi-extensions';
 import { SchemaValidator } from '@0xproject/json-schemas';
 import { SignedOrderEntity } from '../entities/signedOrderEntity';
 import { ZeroExClient } from '../utils/zeroExClient';
+import { TokenPairOrderbook } from '../types/tokenPairOrderBook';
 
 @Service()
 export class RestService {
@@ -19,12 +20,25 @@ export class RestService {
         private orderRepository: SignedOrderRepository
     ) {}   
 
-    public getTokenPairs(baseTokenAddress: string, quoteTokenAddress: string) {
+    public getTokenPairs() {
         return null;
     }
   
-    public getOrderBook() {
-        return null;
+    public getOrderBook(baseTokenAddress: string, quoteTokenAddress: string): Promise<TokenPairOrderbook> {
+        return Promise.all(
+            [
+                this.orderRepository.getTokenPairOrders(baseTokenAddress, quoteTokenAddress), 
+                this.orderRepository.getTokenPairOrders(quoteTokenAddress, baseTokenAddress)
+            ]
+        )
+        .then(tokenPairs => {
+            const orderBook: TokenPairOrderbook = {
+                bids: tokenPairs[0],
+                asks: tokenPairs[1]
+            };
+
+            return orderBook;
+        });
     }
   
     public getOrders() {

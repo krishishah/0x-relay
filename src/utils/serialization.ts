@@ -1,7 +1,8 @@
 import { SignedOrder } from '0x.js/lib/src/types';
 import { BigNumber } from 'bignumber.js';
 import { ECSignature } from '0x.js';
-import { SignedOrderSchema } from '../schemas/signedOrderSchema';
+import { SignedOrderSchema, TokenPairOrderbookSchema } from '../types/schemas';
+import { TokenPairOrderbook } from '../types/tokenPairOrderBook';
 
 export class SerializerUtils {
 
@@ -44,6 +45,14 @@ export class SerializerUtils {
         } catch (e) {
             console.log(e);
         }
+    }
+
+    public static TokenPairOrderbooktoJSON(tokenPairOrderbook: TokenPairOrderbook): TokenPairOrderbookSchema {
+        const tokenPairOrderbookSchema: TokenPairOrderbookSchema  = {
+            bids: tokenPairOrderbook.bids.map(bid => SerializerUtils.SignedOrdertoJSON(bid)),
+            asks: tokenPairOrderbook.bids.map(ask => SerializerUtils.SignedOrdertoJSON(ask))
+        };
+        return tokenPairOrderbookSchema;
     }
 
 }
