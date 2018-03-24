@@ -36,31 +36,9 @@ jobs:
           command: npm install --global lerna
 
       - run:
-          name: Install Package Dependencies
-          command: lerna bootstrap
+          name: Install Package Dependencies 
+          command: lerna bootstrap --stream
 
       - run:
           name: Build Packages
-          command: lerna run build
-
-
-
-    #   - run:
-    #       name: Clean npm Cache
-    #       command: npm cache clean --force
-
-    #   - run:
-    #       name: Install dependencies
-    #       command: npm install
-
-    #   - run:
-    #       name: Install Dev Dependencies
-    #       command: npm install --only=dev
-
-    #   - run:
-    #       name: Sync Database with ORM
-    #       command: ./node_modules/.bin/typeorm schema:sync 
-
-    #   - run:
-    #       name: Build server
-    #       command: npm run build
+          command: lerna run build --stream
