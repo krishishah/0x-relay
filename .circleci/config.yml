@@ -20,32 +20,45 @@ jobs:
 
     steps:
       - checkout
-      - run:
-          name: "Checking Versions"
-          command: |
-            node --version
-            npm --version
 
       - run:
-          name: Change permissions from root to user
-          command: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
-
-      - run:
-          name: Clean npm Cache
-          command: npm cache clean --force
-
-      - run:
-          name: Install dependencies
+          name: Install Lerna
           command: npm install
 
       - run:
-          name: Install Dev Dependencies
-          command: npm install --only=dev
+          name: Install Package Dependencies
+          command: lerna bootstrap
 
       - run:
-          name: Sync Database with ORM
-          command: ./node_modules/.bin/typeorm schema:sync 
+          name: Build Packages
+          command: lerna run build
 
-      - run:
-          name: Build server
-          command: npm run build
+    #   - run:
+    #       name: "Checking Versions"
+    #       command: |
+    #         node --version
+    #         npm --version
+
+    #   - run:
+    #       name: Change permissions from root to user
+    #       command: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+
+    #   - run:
+    #       name: Clean npm Cache
+    #       command: npm cache clean --force
+
+    #   - run:
+    #       name: Install dependencies
+    #       command: npm install
+
+    #   - run:
+    #       name: Install Dev Dependencies
+    #       command: npm install --only=dev
+
+    #   - run:
+    #       name: Sync Database with ORM
+    #       command: ./node_modules/.bin/typeorm schema:sync 
+
+    #   - run:
+    #       name: Build server
+    #       command: npm run build
