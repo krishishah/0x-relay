@@ -22,6 +22,16 @@ jobs:
       - checkout
 
       - run:
+          name: "Checking Versions"
+          command: |
+            node --version
+            npm --version
+
+      - run:
+          name: Change permissions from root to user
+          command: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
+          
+      - run:
           name: Install Lerna
           command: npm install
 
@@ -33,15 +43,7 @@ jobs:
           name: Build Packages
           command: lerna run build
 
-    #   - run:
-    #       name: "Checking Versions"
-    #       command: |
-    #         node --version
-    #         npm --version
 
-    #   - run:
-    #       name: Change permissions from root to user
-    #       command: sudo chown -R $(whoami) $(npm config get prefix)/{lib/node_modules,bin,share}
 
     #   - run:
     #       name: Clean npm Cache
