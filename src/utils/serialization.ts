@@ -22,7 +22,7 @@ export class SerializerUtils {
             feeRecipient: signedOrder.feeRecipient,
             expirationUnixTimestampSec: signedOrder.expirationUnixTimestampSec.toString()
         };
-    }
+    } 
 
     public static SignedOrderfromJSON(signedOrderObj: SignedOrderSchema): SignedOrder {
         try {
