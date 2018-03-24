@@ -50,7 +50,7 @@ export class SerializerUtils {
     public static TokenPairOrderbooktoJSON(tokenPairOrderbook: TokenPairOrderbook): TokenPairOrderbookSchema {
         const tokenPairOrderbookSchema: TokenPairOrderbookSchema  = {
             bids: tokenPairOrderbook.bids.map(bid => SerializerUtils.SignedOrdertoJSON(bid)),
-            asks: tokenPairOrderbook.bids.map(ask => SerializerUtils.SignedOrdertoJSON(ask))
+            asks: tokenPairOrderbook.asks.map(ask => SerializerUtils.SignedOrdertoJSON(ask))
         };
         return tokenPairOrderbookSchema;
     }

@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import { ECSignature } from '0x.js/lib/src/types';
 import { Service } from 'typedi';
 import { OrmConnection, OrmRepository } from 'typeorm-typedi-extensions';
-import { TokenPairOrderBook } from '../types/tokenPairOrderBook';
+import { signedOrderCompare } from '../utils/signedOrderCompare';
 
 @Service()
 @EntityRepository(SignedOrderEntity)
@@ -35,8 +35,8 @@ export class SignedOrderRepository extends Repository<SignedOrderEntity> {
                 takerTokenAddress: takerTokenAddress
             }
         )
-        .then( signedOrders => {
-            return signedOrders.map(signedOrder => this.toSignedOrder(signedOrder));
+        .then(signedOrders => {
+            return signedOrders.map(signedOrder => this.toSignedOrder(signedOrder)).sort(signedOrderCompare);
         });
     }
 
