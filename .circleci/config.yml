@@ -3,6 +3,7 @@ version: 2
 jobs:
   build:
     docker:
+
       - image: circleci/node:9.3
         environment:
           - PORT: 3000
@@ -17,6 +18,8 @@ jobs:
           - POSTGRES_USER: test
           - POSTGRES_DB: test
           - POSTGRES_PASSWORD: test
+
+      - image: davidqhr/0x-testrpc:latest
 
     steps:
       - checkout
@@ -42,3 +45,7 @@ jobs:
       - run:
           name: Build Packages
           command: lerna run build --stream
+
+      - run:
+          name: Test Packages
+          command: lerna run test
