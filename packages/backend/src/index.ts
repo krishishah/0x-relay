@@ -13,7 +13,7 @@ import { server as WebSocketServer } from 'websocket';
 
 const host = normalizePort(process.env.HOST || 'localhost');
 const httpPort = normalizePort(process.env.PORT || 3000);
-const wsPort = normalizePort(process.env.PORT || 3001);
+const wsPort = normalizePort(process.env.WSPORT || 3001);
 
 async function createServer(): Promise<Express.Application> {
     debug('ts-express:server');

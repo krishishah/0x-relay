@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "DEBUG=express:* node -r dotenv/config dist/index.js dotenv_config_path=dev.env",
+    "start": "node -r dotenv/config dist/index.js dotenv_config_path=dev.env",
     "test": "./node_modules/.bin/mocha -r ts-node/register 'tests/**/*.test.ts' --exit",
     "build": "gulp scripts",
     "lint": "tslint src/**/*.ts",
