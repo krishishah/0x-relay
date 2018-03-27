@@ -6,6 +6,7 @@ import {
     request as WebSocketRequest
 } from 'websocket';
 import { RestService } from '../services/restService';
+import { EventPubSub } from '../services/eventPubSub';
 
 @Service()
 export class WebSocketHandler {
@@ -13,11 +14,15 @@ export class WebSocketHandler {
     /**
      * Initialize the Web Socket Handler
      */
-    constructor(private wsServer: WebSocketServer, private restService: RestService) {
+    constructor(
+        private wsServer: WebSocketServer, 
+        private restService: RestService, 
+        private pubSubClient: EventPubSub
+    ) {
         this.init();
-     }
+    }
 
-    private handleRequest(request: WebSocketRequest) {
+    private handleSubscriptionRequest(request: WebSocketRequest) {
         let socketConnection: WebSocketConnection | undefined;
 
         socketConnection = request.accept();
@@ -54,11 +59,14 @@ export class WebSocketHandler {
         });
     }
 
+    private handleOrderbookUpdate(): void { }
+
     /**
      * Take each handler, and attach to one of the Web Socket's
      * listeners.
      */
     private init() {
-        this.wsServer.on('request', this.handleRequest.bind(this));
+        this.wsServer.on('request', this.handleSubscriptionRequest.bind(this));
+        this.pubSubClient.subscribe('orderbook_update', this.handleOrderbookUpdate.bind(this));
     }
 }
