@@ -37,11 +37,6 @@ jobs:
       - run:
           name: Install Lerna
           command: npm install --global lerna
-    
-      - run:
-          name: Unset CI
-          command: unset CI
-
 
       - run:
           name: Install Package Dependencies 
@@ -49,7 +44,7 @@ jobs:
 
       - run:
           name: Build Packages
-          command: lerna run build --stream
+          command: CI=false lerna run build --stream
 
       - run:
           name: Test Packages
