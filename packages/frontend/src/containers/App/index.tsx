@@ -5,11 +5,12 @@ import Web3Actions from '../../components/Web3Actions';
 import Faucet from '../../components/Faucet';
 import InstallMetamask from '../../components/InstallMetamask';
 import * as Web3 from 'web3';
-import * as Web3ProviderEngine from 'web3-provider-engine';
 import * as RPCSubprovider from 'web3-provider-engine/subproviders/rpc';
 
 import { InjectedWeb3Subprovider } from '@0xproject/subproviders';
 import { ZeroEx } from '0x.js';
+
+const Web3ProviderEngine = require('web3-provider-engine');
 
 // Kovan is a test network
 // Please ensure you have Metamask installed
