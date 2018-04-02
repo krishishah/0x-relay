@@ -5,7 +5,16 @@
   "dependencies": {
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
-    "react-scripts-ts": "2.14.0"
+    "react-scripts-ts": "2.14.0",
+    "0x.js": "^0.32.3",
+    "@0xproject/connect": "^0.5.8",
+    "@0xproject/subproviders": "0.4.2",
+    "@0xproject/utils": "0.3.0",
+    "@0xproject/web3-wrapper": "0.1.10",
+    "lodash": "4.17.5",
+    "types-bn": "0.0.1",
+    "web3": "^0.20.4",
+    "web3-provider-engine": "^13.6.3"
   },
   "scripts": {
     "start": "react-scripts-ts start",
@@ -18,6 +27,7 @@
     "@types/node": "^9.6.1",
     "@types/react": "^16.1.0",
     "@types/react-dom": "^16.0.4",
+    "@types/lodash": "4.14.102",
     "typescript": "^2.8.1"
   }
 }
