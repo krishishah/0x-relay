@@ -10,7 +10,7 @@ import * as RPCSubprovider from 'web3-provider-engine/subproviders/rpc';
 import { Divider, Container, Segment, Card, Step, Icon } from 'semantic-ui-react';
 import { InjectedWeb3Subprovider } from '@0xproject/subproviders';
 import { ZeroEx } from '0x.js';
-import { EasyTradeSteps } from 'src/components/SimpleTradeSteps';
+import { EasyTradeSteps } from '../../components/SimpleTradeSteps';
 
 const Web3ProviderEngine = require('web3-provider-engine');
 
