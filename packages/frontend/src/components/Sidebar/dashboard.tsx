@@ -10,23 +10,20 @@ export class Dashboard extends React.Component {
     const { activeItem } = this.state;
 
     return (
-      <div style={{ padding: '2em 0em' }}>
-        <Menu size="small" fixed="top" inverted>
-          <Menu.Item name="home" active={activeItem === 'home'} onClick={this.handleItemClick} />
-          <Menu.Item name="messages" active={activeItem === 'messages'} onClick={this.handleItemClick} />
-
+      <div style={{ padding: '1em' }}>
+        <Menu borderless={true} size="large" fixed="top" color="blue">
+          <Menu.Item primary={true} icon="lab" name="OXYGEN DEX"/>
+          
           <Menu.Menu position="right">
-            <Dropdown item text="Language">
+            <Menu.Item name="Simple" active={activeItem === 'home'} onClick={this.handleItemClick} />
+            <Menu.Item name="Expert" active={activeItem === 'messages'} onClick={this.handleItemClick} />
+            <Dropdown item text="Metamask Account">
               <Dropdown.Menu>
                 <Dropdown.Item>English</Dropdown.Item>
                 <Dropdown.Item>Russian</Dropdown.Item>
                 <Dropdown.Item>Spanish</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-
-            <Menu.Item>
-              <Button primary>Sign Up</Button>
-            </Menu.Item>
           </Menu.Menu>
         </Menu>
       </div>

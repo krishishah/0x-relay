@@ -20,8 +20,8 @@ export class EasyTradeSteps extends React.Component {
                 <Step.Description>Exchange Tokens at a given rate</Step.Description>
                 </Step.Content>
             </Step>
-            <Step disabled>={true}
-                <Icon name="check" />
+            <Step disabled={true}>
+                <Icon name="check circle" />
                 <Step.Content>
                 <Step.Title>Confirm Transaction</Step.Title>
                 <Step.Description>Transaction Receipt</Step.Description>

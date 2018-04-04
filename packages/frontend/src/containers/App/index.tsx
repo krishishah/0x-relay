@@ -49,10 +49,9 @@ export default class App extends React.Component<Props, {}> {
             // Browse the individual files for more handy examples
             return (
 
-                <div style={{ padding: '3em'}}>
+                <div style={{ padding: '4em' }}>
                     <Dashboard/>
-                    <Welcome />
-                    <Card raised={true} centered={true} style={{ padding: '2em', width: '800px' }}>
+                    <Card raised={true} centered={true} style={{ padding: '1em', minWidth: '800px'}}>
                         <Card.Content>
                             <Card.Header>
                                 <EasyTradeSteps/>
