@@ -10,6 +10,7 @@ import * as RPCSubprovider from 'web3-provider-engine/subproviders/rpc';
 import { Divider, Container, Segment, Card, Step, Icon } from 'semantic-ui-react';
 import { InjectedWeb3Subprovider } from '@0xproject/subproviders';
 import { ZeroEx } from '0x.js';
+import { EasyTradeSteps } from 'src/components/SimpleTradeSteps';
 
 const Web3ProviderEngine = require('web3-provider-engine');
 
@@ -51,33 +52,10 @@ export default class App extends React.Component<Props, {}> {
                 <div style={{ padding: '3em'}}>
                     <Dashboard/>
                     <Welcome />
-                    
                     <Card raised={true} centered={true} style={{ padding: '2em', width: '800px' }}>
                         <Card.Content>
                             <Card.Header>
-                                <Step.Group attached="top" widths={3} style={{ padding: '0em' }}>
-                                    <Step active>
-                                        <Icon name="pencil" />
-                                        <Step.Content>
-                                        <Step.Title>Allowances</Step.Title>
-                                        <Step.Description>Set Allowances for tokens you'd like to trade</Step.Description>
-                                        </Step.Content>
-                                    </Step>
-                                    <Step disabled>
-                                        <Icon name="exchange" />
-                                        <Step.Content>
-                                        <Step.Title>Trade</Step.Title>
-                                        <Step.Description>Exchange Tokens at a given rate</Step.Description>
-                                        </Step.Content>
-                                    </Step>
-                                    <Step disabled>
-                                        <Icon name="check" />
-                                        <Step.Content>
-                                        <Step.Title>Confirm Transaction</Step.Title>
-                                        <Step.Description>Transaction Receipt</Step.Description>
-                                        </Step.Content>
-                                    </Step>
-                                </Step.Group>
+                                <EasyTradeSteps/>
                             </Card.Header>
                         </Card.Content>
                         <Card.Content>
@@ -93,7 +71,18 @@ export default class App extends React.Component<Props, {}> {
                 </div>
             );
         } else {
-            return <InstallMetamask />;
+            return (
+                    <Card centered={true} style={{marginTop: '100px', padding: '2em', minWidth: '500px'}}>
+                        <Card.Content>
+                            <Card.Header>
+                                <Welcome/>
+                            </Card.Header>
+                        </Card.Content>
+                        <Card.Content>
+                            <InstallMetamask/>
+                        </Card.Content>
+                    </Card>
+            );
         }
     }
 }
