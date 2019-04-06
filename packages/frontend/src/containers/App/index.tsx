@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './App.css';
 import Welcome from '../../components/Welcome';
 import Account from '../Account';
 import Web3Actions from '../../components/Web3Actions';
@@ -14,9 +15,12 @@ import { Web3Wrapper } from '@0xproject/web3-wrapper';
 import SetAllowances from '../Steps/Shared/SetAllowances';
 import ZeroExTradeTokens from '../Steps/Taker/ZeroEx/TradeTokens';
 import OffChainTradeTokens from '../Steps/Taker/OffChain/TradeTokens';
+import DepositTokens from '../Steps/Taker/OffChain/DepositTokens';
 import WrapEth from '../Steps/Taker/WrapEth';
 import CreateOrder from '../Steps/Maker/CreateOrder';
 import SubmitSignedOrder from '../Steps/Maker/SubmitSignedOrder';
+import SettlementWorkflowButtonGroup from '../../components/SettlementWorkflowButtonGroup';
+import WorkflowChoiceModal from '../../components/WorkflowChoiceModal';
 import { 
     UserActionMessage, 
     UserActionMessageProps,
@@ -35,7 +39,10 @@ import {
     GridColumn,
     MenuItemProps,
     Button,
-    ButtonProps
+    ButtonProps,
+    Header,
+    Image,
+    List
 } from 'semantic-ui-react';
 import { 
     InjectedWeb3Subprovider, 
@@ -95,7 +102,7 @@ interface State {
     submitableZeroExMakerSignedOrder: undefined | SignedOrder;
     submitableOffChainMakerSignedOrder: undefined | OffChainSignedOrder;
     activeSettlementWorkflow: UserSettlementWorkflow;
-    
+    displayWorkflowInformationModal: boolean;
 }
 
 export default class App extends React.Component<Props, State> {
@@ -125,7 +132,8 @@ export default class App extends React.Component<Props, State> {
             activeUserWorkflow: 'Taker',
             submitableZeroExMakerSignedOrder: undefined,
             submitableOffChainMakerSignedOrder: undefined,
-            activeSettlementWorkflow: 'On-Chain'
+            activeSettlementWorkflow: 'On-Chain',
+            displayWorkflowInformationModal: true
         };
     }
 
@@ -366,12 +374,28 @@ export default class App extends React.Component<Props, State> {
             this.setState({ activeUserWorkflow: 'Maker' }); 
     }
 
+    private onChangeUserWorkflow = async (event: React.MouseEvent<HTMLButtonElement>, data: ButtonProps) => {
+        data.name === 'Order Taker' ? 
+            this.setState({ activeUserWorkflow: 'Taker' }) 
+        : 
+            this.setState({ activeUserWorkflow: 'Maker' }); 
+    }
+        
+
     private onClickOnChainWorkflow = async (event: React.MouseEvent<HTMLButtonElement>, data: ButtonProps) => {
         await this.setState({ activeSettlementWorkflow: 'On-Chain' });
     }
 
     private onClickOffChainWorkflow = async (event: React.MouseEvent<HTMLButtonElement>, data: ButtonProps) => {
         await this.setState({ activeSettlementWorkflow: 'Off-Chain' });
+    }
+
+    private onClickWorkflowInformation = async (event: React.MouseEvent<HTMLAnchorElement>, data: MenuItemProps) => {
+        await this.setState({ displayWorkflowInformationModal: true });
+    }
+
+    private closeWorkflowInformationModal = async () => {
+        await this.setState({ displayWorkflowInformationModal: false });
     }
 
     private renderMakerWorkflow = (): any => {
@@ -383,7 +407,7 @@ export default class App extends React.Component<Props, State> {
 
         switch (activeMakerStep) {
             case 'Allowance': {
-                makerStepToRender = (
+                makerStepToRender = this.state.activeSettlementWorkflow === 'On-Chain' ? (
                     <SetAllowances 
                         zeroEx={this.zeroEx} 
                         accounts={this.state.accounts}
@@ -392,6 +416,13 @@ export default class App extends React.Component<Props, State> {
                         fetchAllowances={this.fetchAllowances}
                         setTokenAllowance={this.setTokenAllowance}
                         fetchTokenAllowance={this.fetchTokenAllowance}
+                    />
+                ) : (
+                    <DepositTokens
+                        zeroEx={this.zeroEx} 
+                        accounts={this.state.accounts}
+                        tokens={this.state.zeroExRegistryTokens}
+                        setTransactionMessageState={this.setTransactionMessageState}
                     />
                 );
                 break;
@@ -438,6 +469,7 @@ export default class App extends React.Component<Props, State> {
                         ||
                         (offChainMakerOrder === undefined && activeSettlementWorkflow === 'Off-Chain')
                     }
+                    userSettlementWorkflow={this.state.activeSettlementWorkflow}
                 />
                 <Segment 
                     attached={true}
@@ -477,7 +509,7 @@ export default class App extends React.Component<Props, State> {
 
         switch (activeTakerStep) {
             case 'Allowance': {
-                takerStepToRender = (
+                takerStepToRender = this.state.activeSettlementWorkflow === 'On-Chain' ? (
                     <SetAllowances 
                         zeroEx={this.zeroEx} 
                         accounts={this.state.accounts}
@@ -486,6 +518,13 @@ export default class App extends React.Component<Props, State> {
                         fetchAllowances={this.fetchAllowances}
                         setTokenAllowance={this.setTokenAllowance}
                         fetchTokenAllowance={this.fetchTokenAllowance}
+                    />
+                ) : (
+                    <DepositTokens
+                        zeroEx={this.zeroEx} 
+                        accounts={this.state.accounts}
+                        tokens={this.state.zeroExRegistryTokens}
+                        setTransactionMessageState={this.setTransactionMessageState}
                     />
                 );
                 break;
@@ -530,6 +569,7 @@ export default class App extends React.Component<Props, State> {
                 <SimpleTakerTradeStepsHeader 
                     activeStep={this.state.activeTakerStep}
                     changeStep={this.changeTakerStep}
+                    userSettlementWorkflow={this.state.activeSettlementWorkflow}
                 />
                 <Segment 
                     attached={true}
@@ -553,6 +593,20 @@ export default class App extends React.Component<Props, State> {
         );
     }
 
+    private renderWorkflowChoiceModal = (): any => {
+        return (
+            <WorkflowChoiceModal
+                onClickOnChainWorkflow={this.onClickOnChainWorkflow}
+                onClickOffChainWorkflow={this.onClickOffChainWorkflow}
+                activeSettlementWorkflow={this.state.activeSettlementWorkflow}
+                onCloseWorkflowInformationModal={this.closeWorkflowInformationModal}
+                displayWorkflowInformationModal={this.state.displayWorkflowInformationModal}
+                onChangeUserWorkflow={this.onChangeUserWorkflow}
+                activeUserWorkflow={this.state.activeUserWorkflow}
+            />
+        );
+    }
+
     // tslint:disable-next-line:member-ordering
     render() {
         // Detect if Web3 is found, if not, ask the user to install Metamask
@@ -566,6 +620,8 @@ export default class App extends React.Component<Props, State> {
                 userWorkflow = this.renderMakerWorkflow();
             }
 
+            const workflowChoiceModal = this.renderWorkflowChoiceModal();
+
             return (
                 <Container 
                     style={{ 
@@ -576,41 +632,21 @@ export default class App extends React.Component<Props, State> {
                         marginBottom: 'auto',
                         width: '100%'
                     }}
-                >
+                >   
                     <PaymentNetworkRestfulClient
                         ref={ref => (this.paymentNetworkRestClient = ref)} 
                     />
                     <Dashboard
                         activeWorkflow={this.state.activeUserWorkflow}
                         onChangeWorkflow={this.onChangeWorkflow}
+                        onClickInformation={this.onClickWorkflowInformation}
                     />
-                    <Grid 
-                        centered
-                        style={{ 
-                            padding: '2em 1em 2em 1em', 
-                            marginTop: '0px !important', 
-                            marginLeft: 'auto', 
-                            marginRight: 'auto',
-                            marginBottom: 'auto'
-                        }}
-                    >
-                        <Button.Group size="large">
-                            <Button 
-                                basic={this.state.activeSettlementWorkflow !== 'On-Chain'} 
-                                onClick={this.onClickOnChainWorkflow}
-                                color="grey" 
-                            >
-                            On-Chain
-                            </Button>
-                            <Button 
-                                basic={this.state.activeSettlementWorkflow !== 'Off-Chain'} 
-                                onClick={this.onClickOffChainWorkflow}
-                                color="grey" 
-                            >
-                            Off-Chain
-                            </Button>
-                        </Button.Group>
-                    </Grid>
+                    {workflowChoiceModal}
+                    <SettlementWorkflowButtonGroup
+                        onClickOnChainWorkflow={this.onClickOnChainWorkflow}
+                        onClickOffChainWorkflow={this.onClickOffChainWorkflow}
+                        activeSettlementWorkflow={this.state.activeSettlementWorkflow}
+                    />
                     <Grid 
                         style={{ 
                             padding: '2em 1em 2em 1em', 
